@@ -1075,14 +1075,14 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\djhlo\\bopl mods\\PlatformApi\\PlatformApi.csproj",
+      "projectUniqueName": "C:\\Users\\djhlo\\bopl mods\\PlatformApi\\PlatformApi\\PlatformApi.csproj",
       "projectName": "PlatformApi",
-      "projectPath": "C:\\Users\\djhlo\\bopl mods\\PlatformApi\\PlatformApi.csproj",
+      "projectPath": "C:\\Users\\djhlo\\bopl mods\\PlatformApi\\PlatformApi\\PlatformApi.csproj",
       "packagesPath": "C:\\Users\\djhlo\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\djhlo\\bopl mods\\PlatformApi\\obj\\",
+      "outputPath": "C:\\Users\\djhlo\\bopl mods\\PlatformApi\\PlatformApi\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\djhlo\\bopl mods\\PlatformApi\\NuGet.Config",
+        "C:\\Users\\djhlo\\bopl mods\\PlatformApi\\PlatformApi\\NuGet.Config",
         "C:\\Users\\djhlo\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

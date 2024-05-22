@@ -192,7 +192,7 @@ namespace MapMaker
             body.up = new Vec2(rot);
         }
         /// <summary>
-        /// sets mass per area. mass is calculated with the following formula. 10 + CustomMassScale * PlatformArea
+        /// sets mass per area. mass is calculated with the following formula. 10 + MassPerArea * PlatformArea
         public static void SetMassPerArea(GameObject platform, Fix MassPerArea)
         {
             var platform2 = platform.GetComponent<ResizablePlatform>();
