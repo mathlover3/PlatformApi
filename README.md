@@ -59,5 +59,8 @@ adds a Force
 ## AddForceAtPosition
 adds a Force at the given posison.
 
+## SetHome
+sets the platforms home (basicly where it wants to be)
+
 ## License
 This mod is released under the Creative Commons Attribution 4.0 license. See the `LICENSE` file for more information.

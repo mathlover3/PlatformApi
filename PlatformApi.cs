@@ -15,7 +15,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
-namespace MapMaker
+namespace PlatformApi
 {
     [BepInPlugin("com.David_Loves_JellyCar_Worlds.PlatformApi", "PlatformApi", "1.0.0")]
     public class PlatformApi : BaseUnityPlugin
@@ -239,7 +239,9 @@ namespace MapMaker
             AntiLockPlatform AntiLockPlatformComp;
             if (platform.GetComponent<VectorFieldPlatform>() != null)
             {
-                Destroy(platform.GetComponent<VectorFieldPlatform>());
+                var plat = platform.GetComponent<VectorFieldPlatform>();
+                plat.IsDestroyed = true;
+                Destroy(plat);
             }
             if (platform.GetComponent<AntiLockPlatform>() != null)
             {
@@ -265,7 +267,9 @@ namespace MapMaker
             VectorFieldPlatform VectorFieldPlatformComp;
             if (platform.GetComponent<AntiLockPlatform>() != null)
             {
-                Destroy(platform.GetComponent<AntiLockPlatform>());
+                var plat = platform.GetComponent<AntiLockPlatform>();
+                plat.IsDestroyed = true;
+                Destroy(plat);
             }
             if (platform.GetComponent<VectorFieldPlatform>() != null)
             {
@@ -304,6 +308,13 @@ namespace MapMaker
         {
             BoplBody body = platform.GetComponent<BoplBody>();
             body.AddForceAtPosition(f, pos, forceMode);
+        }
+        /// <summary>
+        /// sets the platforms home (where it trys to be)
+        public static void SetHome(GameObject platform, Vec2 NewHome)
+        {
+            AnimateVelocity component = platform.GetComponent<AnimateVelocity>();
+            component.HomePosition = NewHome;
         }
     }
 }
