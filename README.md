@@ -3,14 +3,20 @@ This is a Api for anything Platform releated.
 
 ## Documentason
 
+## Setting Up
+just add it as a assebaly refrenct and do "using PlatformApi"
+then you can acsess it with "PlatformApi.PlatformApi"
+
 ## PlatformList
 not a funcson but a list of all platforms in the level SOME MIGHT BE NULL! MAKE SURE TO CHECK IF A PLATFORM IS NULL BEFORE YOU USE IT!
+
 ## SpawnPlatform
 spawns a platform based off of many pramiters.
 most of them are self exsplantory so ill menchen the stuff that isnt.
 all doubles are rounded to the nearest Thousandnth in order to account for hardwhere difrentses in doubles.
 and if you are wondering why not use Fixs drectly its because i want defult values so you dont have to pass in stuff it doesnt even use/have me make 100 funcsons for difrent inputs.
 if you would like to set one of the values to something more precice use one of the funcsons below.
+
 ## X and Y cords
 Camera_XMin = (Fix)(-97.27f);
 Camera_XMax = (Fix)97.6f;
@@ -71,5 +77,7 @@ sets the platforms home (basicly where it wants to be)
 gets the posison of the platform USE THIS INSTEAD OF JUST GETTING THE TRASFORM! 
 GETTING THE POS FROM THE TRANSFORM CAN CAUSE DESINKS DUE TO DIFRENCES IN FLOATING POINT IN DIFRENT CPUS!!!
 
+## SetPos
+sets the posison of the platform. would recoment also setting the Home or it will just try to go back to it.
 ## License
 This mod is released under the Creative Commons Attribution 4.0 license. See the `LICENSE` file for more information.

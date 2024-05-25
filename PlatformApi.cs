@@ -73,6 +73,7 @@ namespace PlatformApi
             }
             //load the slime cam for use in spawning platforms with slimecam
             SlimeCamObject = (GameObject)MyAssetBundle.LoadAsset("assets/assetbundleswanted/slimetrailcam.prefab");
+            MyAssetBundle.Unload(false);
         }
         public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
@@ -338,6 +339,14 @@ namespace PlatformApi
             AnimateVelocity component = platform.GetComponent<AnimateVelocity>();
             component.HomePosition = NewHome;
         }
+        public static Vec2 GetPos(GameObject platform)
+        {
+            return platform.GetComponent<BoplBody>().position;
+        }
+        public static void SetPos(GameObject platform, Vec2 NewPos)
+        {
+            platform.GetComponent<BoplBody>().position = NewPos;
+        }
         [HarmonyPatch(typeof(ResizablePlatform))]
         public class Patches
         {
@@ -350,9 +359,7 @@ namespace PlatformApi
 
             }
         }
-        public static Vec2 GetPos(GameObject platform)
-        {
-            return platform.GetComponent<BoplBody>().position;
-        }
+
+
     }
 }
