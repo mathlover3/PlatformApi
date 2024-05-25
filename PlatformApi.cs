@@ -25,6 +25,7 @@ namespace PlatformApi
         public static Material PlatformMat;
         public static Logger logger = new Logger();
         public static AssetBundle MyAssetBundle;
+        public static List<GameObject> PlatformList = new List<GameObject>();
         public enum PathType
         {
             None,
@@ -36,6 +37,10 @@ namespace PlatformApi
             
             SceneManager.sceneLoaded += OnSceneLoaded;
             Debug.Log("Awake");
+            Harmony harmony = new Harmony("com.David_Loves_JellyCar_Worlds.PlatformApi");
+            Logger.LogInfo("harmany created");
+            harmony.PatchAll();
+            Logger.LogInfo("PlatformApi Patch Compleate!");
             //get the platform prefab out of the Platform ability gameobject (david) DO NOT REMOVE!
             //chatgpt code to get the Platform ability object
             GameObject[] allObjects = Resources.FindObjectsOfTypeAll(typeof(GameObject)) as GameObject[];
@@ -71,13 +76,26 @@ namespace PlatformApi
         }
         public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
+            
             if (IsLevelName(scene.name))
             {
                 Debug.Log("OnSceneLoaded");
+                PlatformList = new List<GameObject>();
                 //GetChild(int index);
                 var level = GameObject.Find("Level");
                 if (level)
                 {
+                    //platform list
+                    var PlatformArray = FindObjectsOfType(typeof(ShakablePlatform));
+                    foreach (var Platform in PlatformArray)
+                    {
+                        if (Platform != null)
+                        {
+                            var Shakeable = (ShakablePlatform)Platform;
+                            PlatformList.Add(Shakeable.gameObject);
+                        }
+                    }
+                    //steal mat
                     var plat = level.transform.GetChild(0);
                     if (plat)
                     {
@@ -108,7 +126,7 @@ namespace PlatformApi
             //rotatson (in radiens)
             StickyRect.GetGroundBody().up = new Vec2(rotatson);
             //mass
-            platform.MassPerArea = (Fix)MassPerArea;
+            platform.MassPerArea = FloorToThousandnths(MassPerArea);
             SpriteRenderer spriteRenderer = (SpriteRenderer)AccessTools.Field(typeof(StickyRoundedRectangle), "spriteRen").GetValue(StickyRect);
             //TODO remove sprite object on scene change
             if (sprite != null)
@@ -144,9 +162,9 @@ namespace PlatformApi
             {
                 //antilock platform
                 var AntiLockPlatformComp = platform.gameObject.AddComponent(typeof(AntiLockPlatform)) as AntiLockPlatform;
-                AntiLockPlatformComp.OrbitForce = (Fix)OrbitForce;
+                AntiLockPlatformComp.OrbitForce = FloorToThousandnths(OrbitForce);
                 AntiLockPlatformComp.OrbitPath = OrbitPath;
-                AntiLockPlatformComp.DelaySeconds = (Fix)DelaySeconds;
+                AntiLockPlatformComp.DelaySeconds = FloorToThousandnths(DelaySeconds);
                 AntiLockPlatformComp.isBird = isBird;
             }
             if (pathType == PathType.VectorFieldPlatform)
@@ -158,17 +176,21 @@ namespace PlatformApi
                 }
                 var VectorFieldPlatformComp = platform.gameObject.AddComponent(typeof(VectorFieldPlatform)) as VectorFieldPlatform;
                 VectorFieldPlatformComp.centerPoint = centerPointReal;
-                VectorFieldPlatformComp.DeadZoneDist = (Fix)DeadZoneDist;
-                VectorFieldPlatformComp.DelaySeconds = (Fix)DelaySeconds;
-                VectorFieldPlatformComp.expandSpeed = (Fix)expandSpeed;
-                VectorFieldPlatformComp.normalSpeedFriction = (Fix)normalSpeedFriction;
-                VectorFieldPlatformComp.OrbitAccelerationMulitplier = (Fix)OrbitAccelerationMulitplier;
-                VectorFieldPlatformComp.orbitSpeed = (Fix)orbitSpeed;
-                VectorFieldPlatformComp.ovalness01 = (Fix)ovalness01;
-                VectorFieldPlatformComp.targetRadius = (Fix)targetRadius;
+                VectorFieldPlatformComp.DeadZoneDist = FloorToThousandnths(DeadZoneDist);
+                VectorFieldPlatformComp.DelaySeconds = FloorToThousandnths(DelaySeconds);
+                VectorFieldPlatformComp.expandSpeed = FloorToThousandnths(expandSpeed);
+                VectorFieldPlatformComp.normalSpeedFriction = FloorToThousandnths(normalSpeedFriction);
+                VectorFieldPlatformComp.OrbitAccelerationMulitplier = FloorToThousandnths(OrbitAccelerationMulitplier);
+                VectorFieldPlatformComp.orbitSpeed = FloorToThousandnths(orbitSpeed);
+                VectorFieldPlatformComp.ovalness01 = FloorToThousandnths(ovalness01);
+                VectorFieldPlatformComp.targetRadius = FloorToThousandnths(targetRadius);
             }
             Debug.Log("Spawned platform at position (" + X + ", " + Y + ") with dimensions (" + Width + ", " + Height + ") and radius " + Radius);
             return StickyRect.transform.gameObject;
+        }
+        internal static Fix FloorToThousandnths(double value)
+        {
+            return Fix.Floor(((Fix)value) * (Fix)1000) / (Fix)1000;
         }
         internal static void ResizePlatform(ResizablePlatform platform, Fix newWidth, Fix newHeight, Fix newRadius)
         {
@@ -176,7 +198,7 @@ namespace PlatformApi
         }
         //this can be called anytime the object is active. this means you can have animated levels with shape changing platforms
         /// <summary>
-        /// Resizes the platform. also recalculates the mass. can be called anytime
+        /// Resizes the platform. also recalculates the mass. can be called anytime. only works on platforms that are created with SpawnPlatform or the platform ability
         public static void ResizePlatform(GameObject platform, Fix newWidth, Fix newHeight, Fix newRadius)
         {
             var platform2 = platform.GetComponent<ResizablePlatform>();
@@ -315,6 +337,22 @@ namespace PlatformApi
         {
             AnimateVelocity component = platform.GetComponent<AnimateVelocity>();
             component.HomePosition = NewHome;
+        }
+        [HarmonyPatch(typeof(ResizablePlatform))]
+        public class Patches
+        {
+            [HarmonyPatch("Awake")]
+            [HarmonyPostfix]
+            public static void Patch(ResizablePlatform __instance)
+            {
+                Debug.Log("platform awake");
+                PlatformList.Add(__instance.gameObject);
+
+            }
+        }
+        public static Vec2 GetPos(GameObject platform)
+        {
+            return platform.GetComponent<BoplBody>().position;
         }
     }
 }
