@@ -17,7 +17,7 @@ using Object = UnityEngine.Object;
 
 namespace PlatformApi
 {
-    [BepInPlugin("com.David_Loves_JellyCar_Worlds.PlatformApi", "PlatformApi", "1.0.0")]
+    [BepInPlugin("com.David_Loves_JellyCar_Worlds.PlatformApi", "PlatformApi", "1.1.0")]
     public class PlatformApi : BaseUnityPlugin
     {
         private static StickyRoundedRectangle platformPrefab;
@@ -215,11 +215,42 @@ namespace PlatformApi
             body.up = new Vec2(rot);
         }
         /// <summary>
-        /// sets mass per area. mass is calculated with the following formula. 10 + MassPerArea * PlatformArea
-        public static void SetMassPerArea(GameObject platform, Fix MassPerArea)
+        /// gets the rotatson of the platform in radiens.
+        public static Fix GetRot(GameObject platform)
+        {
+            var body = platform.GetComponent<BoplBody>();
+            return Vec2.NormalizedVectorAngle(body.up);
+        }
+        /// <summary>
+        /// sets mass per area. mass is calculated with the following formula. 10 + MassPerArea * PlatformArea. only works on platforms with ResizablePlatform. returns false if it fails
+        public static bool SetMassPerArea(GameObject platform, Fix MassPerArea)
         {
             var platform2 = platform.GetComponent<ResizablePlatform>();
-            platform2.MassPerArea = MassPerArea;
+            if (platform2)
+            {
+                platform2.MassPerArea = MassPerArea;
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// sets mass. only works on platforms WITHOUT ResizablePlatform. returns false if it fails.
+        public static bool SetMass(GameObject platform, Fix Mass)
+        {
+            if (!platform.GetComponent<ResizablePlatform>())
+            {
+                BoplBody body = platform.GetComponent<BoplBody>();
+                body.InverseMass = Fix.One / Mass;
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// gets mass. works on all platform types.
+        public static Fix GetMass(GameObject platform)
+        {
+            BoplBody body = platform.GetComponent<BoplBody>();
+            return Fix.One / body.InverseMass;
         }
         /// <summary>
         /// sets the sprite of the platform. make sure your sprites pivet and size is set correctly. note that this replaces the material.
@@ -279,6 +310,10 @@ namespace PlatformApi
             AntiLockPlatformComp.DelaySeconds = DelaySeconds;
             AntiLockPlatformComp.isBird = isBird;
         }
+        public static AntiLockPlatform GetAntiLockPlatform(GameObject platform)
+        {
+            return platform.GetComponent<AntiLockPlatform>();
+        }
         /// <summary>
         /// add/replaces VectorFieldPlatform. if there already is a VectorFieldPlatform it replaces it. if theres a AntiLockPlatform it removes it.
         /// </summary>
@@ -312,6 +347,10 @@ namespace PlatformApi
             VectorFieldPlatformComp.ovalness01 = ovalness01;
             VectorFieldPlatformComp.targetRadius = targetRadius;
         }
+        public static VectorFieldPlatform GetVectorFieldPlatform(GameObject platform)
+        {
+            return platform.GetComponent<VectorFieldPlatform>();
+        }
         /// <summary>
         /// sets the color of the platform.
         public static void SetMaterial(GameObject platform, Material material)
@@ -333,12 +372,38 @@ namespace PlatformApi
             body.AddForceAtPosition(f, pos, forceMode);
         }
         /// <summary>
-        /// sets the platforms home (where it trys to be)
+        /// if the platform has ResizablePlatform on it, it will remove the platform by strinking it and making it disapear. retruns false if the gameobject doesnt have ResizablePlatform on it.
+        public static bool RemovePlatformFancy(GameObject platform)
+        {
+            ResizablePlatform component = platform.GetComponent<ResizablePlatform>();
+            if (component)
+            {
+                component.RemovePlatform();
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// just deleates the platform.
+        public static void RemovePlatform(GameObject platform)
+        {
+            Updater.DestroyFix(platform);
+        }
+        /// <summary>
+        /// gets the platforms home (where it trys to be).
+        public static Vec2 GetHome(GameObject platform)
+        {
+            AnimateVelocity component = platform.GetComponent<AnimateVelocity>();
+            return component.HomePosition;
+        }
+        /// <summary>
+        /// sets the platforms home (where it trys to be).
         public static void SetHome(GameObject platform, Vec2 NewHome)
         {
             AnimateVelocity component = platform.GetComponent<AnimateVelocity>();
             component.HomePosition = NewHome;
         }
+
         public static Vec2 GetPos(GameObject platform)
         {
             return platform.GetComponent<BoplBody>().position;
@@ -346,6 +411,59 @@ namespace PlatformApi
         public static void SetPos(GameObject platform, Vec2 NewPos)
         {
             platform.GetComponent<BoplBody>().position = NewPos;
+        }
+        /// <summary>
+        /// gets the platforms scale.
+        public static Fix GetScale(GameObject platform)
+        {
+            return platform.GetComponent<DPhysicsRoundedRect>().scale;
+        }
+        /// <summary>
+        /// sets the platforms scale.
+        public static void SetScale(GameObject platform, Fix NewScale)
+        {
+            platform.GetComponent<DPhysicsRoundedRect>().scale = NewScale;
+        }
+        /// <summary>
+        /// gets the platforms area in bopl squrared units.
+        public static Fix PlatformArea(GameObject platform)
+        {
+            return platform.GetComponent<DPhysicsRoundedRect>().PlatformArea();
+        }
+        /// <summary>
+        /// gets a platforms area with the given prams in bopl squrared units.
+        public static Fix PlatformArea(Fix Width, Fix Height, Fix Radius)
+        {
+            var DPhysicsRoundedRect2 = new DPhysicsRoundedRect();
+            return DPhysicsRoundedRect2.PlatformArea(Width, Height, Radius);
+        }
+        public static DPhysicsRoundedRect GetDPhysicsRoundedRect(GameObject platform)
+        {
+            return platform.GetComponent<DPhysicsRoundedRect>();
+        }
+        public static ShakablePlatform GetShakablePlatform(GameObject platform)
+        {
+            return platform.GetComponent<ShakablePlatform>();
+        }
+        public static StickyRoundedRectangle GetStickyRoundedRectangle(GameObject platform)
+        {
+            return platform.GetComponent<StickyRoundedRectangle>();
+        }
+        public static BoplBody GetBoplBody(GameObject platform)
+        {
+            return platform.GetComponent<BoplBody>();
+        }
+        public static AnimateVelocity GetAnimateVelocity(GameObject platform)
+        {
+            return platform.GetComponent<AnimateVelocity>();
+        }
+        public static FixTransform GetFixTransform(GameObject platform)
+        {
+            return platform.GetComponent<FixTransform>();
+        }
+        public static SpriteRenderer GetSpriteRenderer(GameObject platform)
+        {
+            return platform.GetComponent<SpriteRenderer>();
         }
         [HarmonyPatch(typeof(ResizablePlatform))]
         public class Patches

@@ -43,8 +43,18 @@ it only works on platforms made with the platform ability/the SpawnPlatform func
 ## SetRot
 sets the rotatson. rotatson is in radiens.
 
+## GetRot
+gets the rotatson. rotatson is in radiens.
+
 ## SetMassPerArea
-mass is calculated with the following formula. 10 + MassPerArea * PlatformArea.
+sets mass per area. mass is calculated with the following formula. 10 + MassPerArea * PlatformArea. 
+only works on platforms with ResizablePlatform. returns false if it fails
+
+## SetMass
+sets mass. only works on platforms WITHOUT ResizablePlatform. returns false if it fails.
+
+## GetMass
+gets mass. works on all platform types.
 
 ## SetSprite
 should be self exsplanitory
@@ -53,13 +63,19 @@ should be self exsplanitory
 should be self exsplanitory
 
 ## SetType
-sets the platform type.
+sets the platform type. used for drill color and matchomans boulder texstures
 
 ## AddAntiLockPlatform
 makes the platform a AntiLockPlatform. basicly a platform that moves on a path
 
+## GetAntiLockPlatform
+gets the AntiLockPlatform if there is one. returns null if there isnt.
+
 ## AddVectorFieldPlatform
 makes the platform a VectorFieldPlatform. basicly a platform that moves in a circle/oval
+
+## GetVectorFieldPlatform
+gets the VectorFieldPlatform if there is one. returns null if there isnt.
 
 ## SetMaterial
 should be self exsplanitory
@@ -70,6 +86,12 @@ adds a Force
 ## AddForceAtPosition
 adds a Force at the given posison.
 
+## RemovePlatformFancy
+if the platform has ResizablePlatform on it, it will remove the platform by strinking it and making it disapear. retruns false if the gameobject doesnt have ResizablePlatform on it.
+
+## GetHome
+gets the platforms home (basicly where it wants to be)
+
 ## SetHome
 sets the platforms home (basicly where it wants to be)
 
@@ -79,5 +101,22 @@ GETTING THE POS FROM THE TRANSFORM CAN CAUSE DESINKS DUE TO DIFRENCES IN FLOATIN
 
 ## SetPos
 sets the posison of the platform. would recoment also setting the Home or it will just try to go back to it.
+
+## GetScale
+gets the scale of the platform
+
+## SetScale
+sets the scale of the platform
+
+## PlatformArea(GameObject platform)
+returns area of given platform
+
+## PlatformArea(Fix Width, Fix Height, Fix Radius)
+returns area of platform with those prams
+
+## GetDPhysicsRoundedRect, GetShakablePlatform, GetStickyRoundedRectangle, GetBoplBody, GetAnimateVelocity, GetSpriteRenderer and GetFixTransform
+gets the given component. just to make your code a bit clearer
+
+
 ## License
 This mod is released under the Creative Commons Attribution 4.0 license. See the `LICENSE` file for more information.
