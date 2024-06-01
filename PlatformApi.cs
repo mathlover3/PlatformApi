@@ -471,7 +471,7 @@ namespace PlatformApi
         }
         /// <summary>
         /// shakes the platform.
-        public void AddShake(GameObject platform , Fix duration, Fix shakeAmount, AnimationCurveFixed shakeCurve = null)
+        public static void AddShake(GameObject platform , Fix duration, Fix shakeAmount, AnimationCurveFixed shakeCurve = null)
         {
             var shake = platform.GetComponent<ShakablePlatform>();
             shake.AddShake(duration, shakeAmount, 1, null, shakeCurve);
