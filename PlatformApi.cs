@@ -1,4 +1,4 @@
-﻿using BepInEx;
+using BepInEx;
 using BoplFixedMath;
 using HarmonyLib;
 using MonoMod.Utils;
@@ -27,6 +27,8 @@ namespace PlatformApi
         public static AssetBundle MyAssetBundle;
         public static List<GameObject> PlatformList = new List<GameObject>();
         public static ScaleChanger scaleChanger;
+        public static bool gameInProgress;
+        private static GameSessionHandler GameSessionHandler2;
         public enum PathType
         {
             None,
@@ -76,6 +78,17 @@ namespace PlatformApi
             SlimeCamObject = (GameObject)MyAssetBundle.LoadAsset("assets/assetbundleswanted/slimetrailcam.prefab");
             MyAssetBundle.Unload(false);
         }
+        public void Update()
+        {
+            if (GameSessionHandler2)
+            {
+                gameInProgress = (bool)AccessTools.Field(typeof(GameSessionHandler), "gameInProgress").GetValue(GameSessionHandler2) && Updater.SimTimeSinceLevelLoaded > (Fix)2.5;
+            }
+            else
+            {
+                gameInProgress = false;
+            }
+        }
         public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             
@@ -115,10 +128,20 @@ namespace PlatformApi
                     {
                         scaleChanger = ScaleChange.ScaleChangerPrefab;
                     }
+                    GameObject[] allObjects = Resources.FindObjectsOfTypeAll(typeof(GameObject)) as GameObject[];
+                    Logger.LogInfo("getting GameSessionHandler");
+                    foreach (GameObject obj in allObjects)
+                    {
+                        if (obj.name == "PlayerList")
+                        {
+                            GameSessionHandler2 = obj.GetComponent<GameSessionHandler>();
+                            break;
+                        }
+                    }
                 }
             }
         }
-        internal static bool IsLevelName(String input)
+        public static bool IsLevelName(String input)
         {
             Regex regex = new Regex("Level[0-9]+", RegexOptions.IgnoreCase);
             return regex.IsMatch(input);
@@ -219,14 +242,28 @@ namespace PlatformApi
         public static void SetRot(GameObject platform, Fix rot)
         {
             var body = platform.GetComponent<BoplBody>();
-            body.up = new Vec2(rot);
+            body.up = new Vec2(rot % Fix.PiTimes2);
         }
         /// <summary>
-        /// gets the rotatson of the platform in radiens.
+        /// returns the rotatson of the platform in radiens.
         public static Fix GetRot(GameObject platform)
         {
             var body = platform.GetComponent<BoplBody>();
             return Vec2.NormalizedVectorAngle(body.up);
+        }
+        /// <summary>
+        /// sets the rotatson of the home in radiens.
+        public static void SetHomeRot(GameObject platform, Fix rot)
+        {
+            var home = platform.GetComponent<AnimateVelocity>();
+            home.homeRotation = rot % Fix.PiTimes2;
+        }
+        /// <summary>
+        /// returns the rotatson of the home in radiens.
+        public static Fix GetHomeRot(GameObject platform)
+        {
+            var home = platform.GetComponent<AnimateVelocity>();
+            return home.homeRotation;
         }
         /// <summary>
         /// sets mass per area. mass is calculated with the following formula. 10 + MassPerArea * PlatformArea. only works on platforms with ResizablePlatform. returns false if it fails
@@ -253,7 +290,7 @@ namespace PlatformApi
             return false;
         }
         /// <summary>
-        /// gets mass. works on all platform types.
+        /// returns mass. works on all platform types.
         public static Fix GetMass(GameObject platform)
         {
             BoplBody body = platform.GetComponent<BoplBody>();
@@ -397,7 +434,7 @@ namespace PlatformApi
             Updater.DestroyFix(platform);
         }
         /// <summary>
-        /// gets the platforms home (where it trys to be).
+        /// returns the platforms home (where it trys to be).
         public static Vec2 GetHome(GameObject platform)
         {
             AnimateVelocity component = platform.GetComponent<AnimateVelocity>();
@@ -420,7 +457,7 @@ namespace PlatformApi
             platform.GetComponent<BoplBody>().position = NewPos;
         }
         /// <summary>
-        /// gets the platforms scale. returns 0 if the DPhysicsRoundedRect is disabled
+        /// returns the platforms scale. returns 0 if the DPhysicsRoundedRect is disabled
         public static Fix GetScale(GameObject platform)
         {
             if (platform.GetComponent<DPhysicsRoundedRect>())
@@ -457,13 +494,13 @@ namespace PlatformApi
             return scaleChanger2;
         }
         /// <summary>
-        /// gets the platforms area in bopl squrared units.
+        /// returns the platforms area in bopl squrared units.
         public static Fix PlatformArea(GameObject platform)
         {
             return platform.GetComponent<DPhysicsRoundedRect>().PlatformArea();
         }
         /// <summary>
-        /// gets a platforms area with the given prams in bopl squrared units.
+        /// returns a platforms area with the given prams in bopl squrared units.
         public static Fix PlatformArea(Fix Width, Fix Height, Fix Radius)
         {
             var DPhysicsRoundedRect2 = new DPhysicsRoundedRect();
@@ -471,7 +508,7 @@ namespace PlatformApi
         }
         /// <summary>
         /// shakes the platform.
-        public static void AddShake(GameObject platform , Fix duration, Fix shakeAmount, AnimationCurveFixed shakeCurve = null)
+        public void AddShake(GameObject platform , Fix duration, Fix shakeAmount, AnimationCurveFixed shakeCurve = null)
         {
             var shake = platform.GetComponent<ShakablePlatform>();
             shake.AddShake(duration, shakeAmount, 1, null, shakeCurve);
