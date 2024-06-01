@@ -26,6 +26,7 @@ namespace PlatformApi
         public static Logger logger = new Logger();
         public static AssetBundle MyAssetBundle;
         public static List<GameObject> PlatformList = new List<GameObject>();
+        public static ScaleChanger scaleChanger;
         public enum PathType
         {
             None,
@@ -107,6 +108,12 @@ namespace PlatformApi
                     {
                         Logger.LogWarning("Couldnt Find Platfrom to steal Platform Mat from. this can happen if you remove all platforms on scene load. pls manualy steal a platfrom mat and set PlatformApi.PlatformMat to it.");
                         Debug.LogWarning("Couldnt Find Platfrom to steal Platform Mat from. this can happen if you remove all platforms on scene load. pls manualy steal a platfrom mat and set PlatformApi.PlatformMat to it.");
+                    }
+                    ShootScaleChange[] ScaleChanges = Resources.FindObjectsOfTypeAll(typeof(ShootScaleChange)) as ShootScaleChange[];
+                    Debug.Log("getting platform object");
+                    foreach (ShootScaleChange ScaleChange in ScaleChanges)
+                    {
+                        scaleChanger = ScaleChange.ScaleChangerPrefab;
                     }
                 }
             }
@@ -413,16 +420,41 @@ namespace PlatformApi
             platform.GetComponent<BoplBody>().position = NewPos;
         }
         /// <summary>
-        /// gets the platforms scale.
+        /// gets the platforms scale. returns 0 if the DPhysicsRoundedRect is disabled
         public static Fix GetScale(GameObject platform)
         {
-            return platform.GetComponent<DPhysicsRoundedRect>().scale;
+            if (platform.GetComponent<DPhysicsRoundedRect>())
+            {
+                var physics = platform.GetComponent<DPhysicsRoundedRect>().pp.monobehaviourCollider;
+                return physics.Scale;
+
+            }
+            return Fix.Zero;
         }
         /// <summary>
-        /// sets the platforms scale.
-        public static void SetScale(GameObject platform, Fix NewScale)
+        /// sets the platforms scale. returns false if it fails
+        public static bool SetScale(GameObject platform, Fix NewScale)
         {
-            platform.GetComponent<DPhysicsRoundedRect>().scale = NewScale;
+            
+            if (platform.GetComponent<DPhysicsRoundedRect>())
+            {
+                var physics = platform.GetComponent<DPhysicsRoundedRect>().pp.monobehaviourCollider;
+
+                physics.Scale = NewScale;
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// scales the platform smoothly. returns the resulting ScaleChanger object.
+        public static ScaleChanger ScaleSmooth(GameObject platform, Fix multiplier)
+        {
+            ScaleChanger scaleChanger2 = FixTransform.InstantiateFixed<ScaleChanger>(scaleChanger, Vec2.zero);
+            var physics = platform.GetComponent<DPhysicsRoundedRect>().pp.monobehaviourCollider;
+            scaleChanger2.victim = physics;
+            scaleChanger2.multiplier = multiplier;
+            scaleChanger2.smallNonPlayersMultiplier = multiplier;
+            return scaleChanger2;
         }
         /// <summary>
         /// gets the platforms area in bopl squrared units.
@@ -436,6 +468,13 @@ namespace PlatformApi
         {
             var DPhysicsRoundedRect2 = new DPhysicsRoundedRect();
             return DPhysicsRoundedRect2.PlatformArea(Width, Height, Radius);
+        }
+        /// <summary>
+        /// shakes the platform.
+        public void AddShake(GameObject platform , Fix duration, Fix shakeAmount, AnimationCurveFixed shakeCurve = null)
+        {
+            var shake = platform.GetComponent<ShakablePlatform>();
+            shake.AddShake(duration, shakeAmount, 1, null, shakeCurve);
         }
         public static DPhysicsRoundedRect GetDPhysicsRoundedRect(GameObject platform)
         {

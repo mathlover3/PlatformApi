@@ -108,11 +108,17 @@ gets the scale of the platform
 ## SetScale
 sets the scale of the platform
 
+## SetScaleSmooth
+scales the platform smoothly. returns the resulting ScaleChanger object.
+
 ## PlatformArea(GameObject platform)
 returns area of given platform
 
 ## PlatformArea(Fix Width, Fix Height, Fix Radius)
 returns area of platform with those prams
+
+## AddShake
+shakes the platform.
 
 ## GetDPhysicsRoundedRect, GetShakablePlatform, GetStickyRoundedRectangle, GetBoplBody, GetAnimateVelocity, GetSpriteRenderer and GetFixTransform
 gets the given component. just to make your code a bit clearer
