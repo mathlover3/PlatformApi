@@ -95,6 +95,13 @@ adds a Force at the given posison.
 ## RemovePlatformFancy
 if the platform has ResizablePlatform on it, it will remove the platform by strinking it and making it disapear. retruns false if the gameobject doesnt have ResizablePlatform on it.
 
+## RemovePlatform
+just deleates the platform normaly. no fancy strinking or anything. just goes poof.
+
+## SpawnBoulder
+spawns a MatchoMan Boulder. note that most of the funcsons wont work on boulders. if sprite is null then it determens the sprite from the platform type.
+if you add sprites to the "boulders" NamedSpriteList then also add it to the throw2 vars MachoThrow2 instance.
+
 ## GetHome
 returns the platforms home (basicly where it wants to be)
 

@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static UnityEngine.InputSystem.Layouts.InputControlLayout;
 using Object = UnityEngine.Object;
 
 namespace PlatformApi
@@ -29,6 +30,7 @@ namespace PlatformApi
         public static ScaleChanger scaleChanger;
         public static bool gameInProgress;
         private static GameSessionHandler GameSessionHandler2;
+        public static MachoThrow2 throw2;
         public enum PathType
         {
             None,
@@ -49,6 +51,9 @@ namespace PlatformApi
             GameObject[] allObjects = Resources.FindObjectsOfTypeAll(typeof(GameObject)) as GameObject[];
             Debug.Log("getting platform object");
             GameObject PlatformAbility = null;
+            var found = 0;
+            var NumberOfObjectsToFind = 2;
+            //finding difrent objects
             foreach (GameObject obj in allObjects)
             {
                 if (obj.name == "Platform")
@@ -56,7 +61,22 @@ namespace PlatformApi
                     //store its reference
                     PlatformAbility = obj;
                     Debug.Log("Found the Platform object");
-                    break;
+                    found++;
+                    if (found == NumberOfObjectsToFind)
+                    {
+                        break;
+                    }
+                }
+                if (obj.name == "Throw")
+                {
+                    //store its reference
+                    throw2 = obj.GetComponent<MachoThrow2>();
+                    Debug.Log("Found the MachoThrow2");
+                    found++;
+                    if (found == NumberOfObjectsToFind)
+                    {
+                        break;
+                    }
                 }
             }
             if (PlatformAbility)
@@ -432,6 +452,30 @@ namespace PlatformApi
         public static void RemovePlatform(GameObject platform)
         {
             Updater.DestroyFix(platform);
+        }
+        /// <summary>
+        /// spawns a MatchoMan Boulder. note that most of the funcsons wont work on boulders. 
+        public static Boulder SpawnBoulder(Vec2 Pos, Fix Scale, PlatformType platformType, Color color, Sprite sprite = null)
+        {
+            //get the boulder prefab
+            Boulder boulderPrefab = (Boulder)AccessTools.Field(typeof(MachoThrow2), "boulderPrefab").GetValue(throw2);
+            var boulder = FixTransform.InstantiateFixed<Boulder>(boulderPrefab, Pos);
+            var dphysicsRoundedRect = boulder.hitbox;
+            dphysicsRoundedRect.Scale = Scale;
+            dphysicsRoundedRect.ManualInit();
+            dphysicsRoundedRect.Scale = Scale;
+            dphysicsRoundedRect.GetComponent<StickyRoundedRectangle>().platformType = platformType;
+            SpriteRenderer component = dphysicsRoundedRect.GetComponent<SpriteRenderer>();
+            if (sprite != null)
+            {
+                component.sprite = sprite;
+            }
+            else
+            {
+                component.sprite = throw2.boulders.sprites[(int)platformType].sprite;
+            }
+            component.color = color;
+            return boulder;
         }
         /// <summary>
         /// returns the platforms home (where it trys to be).
