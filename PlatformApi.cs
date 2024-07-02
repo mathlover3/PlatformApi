@@ -49,7 +49,7 @@ namespace PlatformApi
             //get the platform prefab out of the Platform ability gameobject (david) DO NOT REMOVE!
             //chatgpt code to get the Platform ability object
             GameObject[] allObjects = Resources.FindObjectsOfTypeAll(typeof(GameObject)) as GameObject[];
-            Debug.Log("getting platform object");
+            Logger.LogInfo("getting platform object");
             GameObject PlatformAbility = null;
             var found = 0;
             var NumberOfObjectsToFind = 2;
@@ -60,7 +60,7 @@ namespace PlatformApi
                 {
                     //store its reference
                     PlatformAbility = obj;
-                    Debug.Log("Found the Platform object");
+                    Logger.LogInfo("Found the Platform object");
                     found++;
                     if (found == NumberOfObjectsToFind)
                     {
@@ -71,7 +71,7 @@ namespace PlatformApi
                 {
                     //store its reference
                     throw2 = obj.GetComponent<MachoThrow2>();
-                    Debug.Log("Found the MachoThrow2");
+                    Logger.LogInfo("Found the MachoThrow2");
                     found++;
                     if (found == NumberOfObjectsToFind)
                     {
@@ -118,6 +118,11 @@ namespace PlatformApi
                 PlatformList = new List<GameObject>();
                 //GetChild(int index);
                 var level = GameObject.Find("Level");
+                if (level == null)
+                {
+                    //this should fix the list not being created on some levels.
+                    level = GameObject.Find("Level (1)");
+                }
                 if (level)
                 {
                     //platform list
@@ -153,6 +158,12 @@ namespace PlatformApi
                     foreach (GameObject obj in allObjects)
                     {
                         if (obj.name == "PlayerList")
+                        {
+                            GameSessionHandler2 = obj.GetComponent<GameSessionHandler>();
+                            break;
+                        }
+                        //level 5 and likely some outers have it named like this.
+                        if (obj.name == "PlayerList (1)")
                         {
                             GameSessionHandler2 = obj.GetComponent<GameSessionHandler>();
                             break;
