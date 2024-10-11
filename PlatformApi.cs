@@ -22,14 +22,14 @@ namespace PlatformApi
     public class PlatformApi : BaseUnityPlugin
     {
         private static StickyRoundedRectangle platformPrefab;
-        private static Object SlimeCamObject;
+        public static Object SlimeCamObject;
         public static Material PlatformMat;
         public static Logger logger = new Logger();
         public static AssetBundle MyAssetBundle;
         public static List<GameObject> PlatformList = new List<GameObject>();
         public static ScaleChanger scaleChanger;
         public static bool gameInProgress;
-        private static GameSessionHandler GameSessionHandler2;
+        public static GameSessionHandler GameSessionHandler2;
         public static MachoThrow2 throw2;
         public enum PathType
         {
@@ -78,6 +78,12 @@ namespace PlatformApi
                         break;
                     }
                 }
+                ShootScaleChange[] ScaleChanges = Resources.FindObjectsOfTypeAll(typeof(ShootScaleChange)) as ShootScaleChange[];
+                Debug.Log("getting platform object");
+                foreach (ShootScaleChange ScaleChange in ScaleChanges)
+                {
+                    scaleChanger = ScaleChange.ScaleChangerPrefab;
+                }
             }
             if (PlatformAbility)
             {
@@ -115,7 +121,15 @@ namespace PlatformApi
             if (IsLevelName(scene.name))
             {
                 Debug.Log("OnSceneLoaded");
-                PlatformList = new List<GameObject>();
+                var platforms = new List<GameObject>();
+                foreach (var platform in PlatformList)
+                {
+                    if (platform != null)
+                    {
+                        platforms.Add(platform);
+                    }
+                }
+                PlatformList = platforms;
                 //GetChild(int index);
                 var level = GameObject.Find("Level");
                 if (level == null)
@@ -125,50 +139,24 @@ namespace PlatformApi
                 }
                 if (level)
                 {
-                    //platform list
-                    var PlatformArray = FindObjectsOfType(typeof(ShakablePlatform));
-                    foreach (var Platform in PlatformArray)
-                    {
-                        if (Platform != null)
-                        {
-                            var Shakeable = (ShakablePlatform)Platform;
-                            PlatformList.Add(Shakeable.gameObject);
-                        }
-                    }
                     //steal mat
                     var plat = level.transform.GetChild(0);
                     if (plat)
                     {
                         PlatformMat = plat.gameObject.GetComponent<SpriteRenderer>().material;
-                        //Debug.Log("mat is " + PlatformMat + " and its name is " + PlatformMat.name);
                     }
                     else
                     {
                         Logger.LogWarning("Couldnt Find Platfrom to steal Platform Mat from. this can happen if you remove all platforms on scene load. pls manualy steal a platfrom mat and set PlatformApi.PlatformMat to it.");
                         Debug.LogWarning("Couldnt Find Platfrom to steal Platform Mat from. this can happen if you remove all platforms on scene load. pls manualy steal a platfrom mat and set PlatformApi.PlatformMat to it.");
                     }
-                    ShootScaleChange[] ScaleChanges = Resources.FindObjectsOfTypeAll(typeof(ShootScaleChange)) as ShootScaleChange[];
-                    Debug.Log("getting platform object");
-                    foreach (ShootScaleChange ScaleChange in ScaleChanges)
-                    {
-                        scaleChanger = ScaleChange.ScaleChangerPrefab;
-                    }
-                    GameObject[] allObjects = Resources.FindObjectsOfTypeAll(typeof(GameObject)) as GameObject[];
                     Logger.LogInfo("getting GameSessionHandler");
-                    foreach (GameObject obj in allObjects)
+                    var PlayerList = GameObject.Find("PlayerList");
+                    if (PlayerList == null)
                     {
-                        if (obj.name == "PlayerList")
-                        {
-                            GameSessionHandler2 = obj.GetComponent<GameSessionHandler>();
-                            break;
-                        }
-                        //level 5 and likely some outers have it named like this.
-                        if (obj.name == "PlayerList (1)")
-                        {
-                            GameSessionHandler2 = obj.GetComponent<GameSessionHandler>();
-                            break;
-                        }
+                        PlayerList = GameObject.Find("PlayerList (1)");
                     }
+                    GameSessionHandler2 = PlayerList.GetComponent<GameSessionHandler>();
                 }
             }
         }
@@ -177,7 +165,7 @@ namespace PlatformApi
             Regex regex = new Regex("Level[0-9]+", RegexOptions.IgnoreCase);
             return regex.IsMatch(input);
         }
-        public static GameObject SpawnPlatform(Fix X, Fix Y, Fix Width, Fix Height, Fix Radius, Fix rotatson, double MassPerArea = 0.05, Vector4[] color = null, PlatformType platformType = PlatformType.slime, bool UseSlimeCam = false, Sprite sprite = null, PathType pathType = PathType.None, double OrbitForce = 1, Vec2[] OrbitPath = null, double DelaySeconds = 1, bool isBird = false, double orbitSpeed = 100, double expandSpeed = 100, Vec2[] centerPoint = null, double normalSpeedFriction = 1, double DeadZoneDist = 1, double OrbitAccelerationMulitplier = 1, double targetRadius = 5, double ovalness01 = 1)
+        public static GameObject SpawnPlatform(Fix X, Fix Y, Fix Width, Fix Height, Fix Radius, Fix rotatson, double MassPerArea = 0.05, Vector4[] color = null, PlatformType platformType = PlatformType.slime, bool UseSlimeCam = false, Sprite sprite = null, PathType pathType = PathType.None, double OrbitForce = 1, Vec2[] OrbitPath = null, double DelaySeconds = 1, double orbitSpeed = 100, double expandSpeed = 100, Vec2[] centerPoint = null, double normalSpeedFriction = 1, double DeadZoneDist = 1, double OrbitAccelerationMulitplier = 1, double targetRadius = 5, double ovalness01 = 1)
         {
             // Spawn platform (david - and now melon)
             var StickyRect = FixTransform.InstantiateFixed<StickyRoundedRectangle>(platformPrefab, new Vec2(X, Y));
@@ -227,7 +215,6 @@ namespace PlatformApi
                 AntiLockPlatformComp.OrbitForce = FloorToThousandnths(OrbitForce);
                 AntiLockPlatformComp.OrbitPath = OrbitPath;
                 AntiLockPlatformComp.DelaySeconds = FloorToThousandnths(DelaySeconds);
-                AntiLockPlatformComp.isBird = isBird;
             }
             if (pathType == PathType.VectorFieldPlatform)
             {
@@ -247,7 +234,6 @@ namespace PlatformApi
                 VectorFieldPlatformComp.ovalness01 = FloorToThousandnths(ovalness01);
                 VectorFieldPlatformComp.targetRadius = FloorToThousandnths(targetRadius);
             }
-            Debug.Log("Spawned platform at position (" + X + ", " + Y + ") with dimensions (" + Width + ", " + Height + ") and radius " + Radius);
             return StickyRect.transform.gameObject;
         }
         internal static Fix FloorToThousandnths(double value)
@@ -362,7 +348,7 @@ namespace PlatformApi
         /// <param name="OrbitPath">Path of the platform.</param>
         /// <param name="DelaySeconds">DelaySeconds. note that it starts upon scene load. not upon player spawn.</param>
         /// <param name="isBird">if true, ignores sudden death. (no clue why this exsits.)</param>
-        public static void AddAntiLockPlatform(GameObject platform, Fix OrbitForce, Vec2[] OrbitPath, Fix DelaySeconds, bool isBird = false)
+        public static void AddAntiLockPlatform(GameObject platform, Fix OrbitForce, Vec2[] OrbitPath, Fix DelaySeconds)
         {
 
             AntiLockPlatform AntiLockPlatformComp;
@@ -383,7 +369,6 @@ namespace PlatformApi
             AntiLockPlatformComp.OrbitForce = OrbitForce;
             AntiLockPlatformComp.OrbitPath = OrbitPath;
             AntiLockPlatformComp.DelaySeconds = DelaySeconds;
-            AntiLockPlatformComp.isBird = isBird;
         }
         public static AntiLockPlatform GetAntiLockPlatform(GameObject platform)
         {
@@ -596,16 +581,17 @@ namespace PlatformApi
         {
             return platform.GetComponent<SpriteRenderer>();
         }
-        [HarmonyPatch(typeof(ResizablePlatform))]
+        [HarmonyPatch(typeof(StickyRoundedRectangle))]
         public class Patches
         {
             [HarmonyPatch("Awake")]
             [HarmonyPostfix]
-            public static void Patch(ResizablePlatform __instance)
+            public static void Patch(StickyRoundedRectangle __instance)
             {
-                Debug.Log("platform awake");
-                PlatformList.Add(__instance.gameObject);
-
+                if (__instance.gameObject.GetComponent<Boulder>() == null)
+                {
+                    PlatformList.Add(__instance.gameObject);
+                } 
             }
         }
 

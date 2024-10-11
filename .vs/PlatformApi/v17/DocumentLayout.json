@@ -1,0 +1,88 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\djhlo\\bopl mods\\PlatformApi\\PlatformApi\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{88BD20FF-AF8B-4F0D-BBE8-C07487838101}|PlatformApi.csproj|c:\\users\\djhlo\\bopl mods\\platformapi\\platformapi\\platformapi.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{88BD20FF-AF8B-4F0D-BBE8-C07487838101}|PlatformApi.csproj|solutionrelative:platformapi.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{88BD20FF-AF8B-4F0D-BBE8-C07487838101}|PlatformApi.csproj|c:\\users\\djhlo\\bopl mods\\platformapi\\platformapi\\platformapi.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "RelativeMoniker": "D:0:0:{88BD20FF-AF8B-4F0D-BBE8-C07487838101}|PlatformApi.csproj|solutionrelative:platformapi.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{88BD20FF-AF8B-4F0D-BBE8-C07487838101}|PlatformApi.csproj|c:\\users\\djhlo\\bopl mods\\platformapi\\platformapi\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{88BD20FF-AF8B-4F0D-BBE8-C07487838101}|PlatformApi.csproj|solutionrelative:readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 1,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedHeight": 418,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "PlatformApi.cs",
+              "DocumentMoniker": "C:\\Users\\djhlo\\bopl mods\\PlatformApi\\PlatformApi\\PlatformApi.cs",
+              "RelativeDocumentMoniker": "PlatformApi.cs",
+              "ToolTip": "C:\\Users\\djhlo\\bopl mods\\PlatformApi\\PlatformApi\\PlatformApi.cs",
+              "RelativeToolTip": "PlatformApi.cs",
+              "ViewState": "AgIAAI8AAAAAAAAAAIAwwKcAAABrAQAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-10T23:23:45.467Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "README.md",
+              "DocumentMoniker": "C:\\Users\\djhlo\\bopl mods\\PlatformApi\\PlatformApi\\README.md",
+              "RelativeDocumentMoniker": "README.md",
+              "ToolTip": "C:\\Users\\djhlo\\bopl mods\\PlatformApi\\PlatformApi\\README.md",
+              "RelativeToolTip": "README.md",
+              "ViewState": "AQIAAE4AAAAAAAAAAAAAAGYAAABuAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2024-07-10T23:23:41.664Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "PlatformApi",
+              "DocumentMoniker": "C:\\Users\\djhlo\\bopl mods\\PlatformApi\\PlatformApi\\PlatformApi.csproj",
+              "RelativeDocumentMoniker": "PlatformApi.csproj",
+              "ToolTip": "C:\\Users\\djhlo\\bopl mods\\PlatformApi\\PlatformApi\\PlatformApi.csproj",
+              "RelativeToolTip": "PlatformApi.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2024-07-10T23:23:41.961Z"
+            }
+          ]
+        },
+        {
+          "DockedHeight": 102,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            }
+          ]
+        },
+        {
+          "DockedHeight": 128,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

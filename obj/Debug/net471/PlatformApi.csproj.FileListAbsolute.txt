@@ -73,6 +73,7 @@ C:\Users\djhlo\bopl mods\PlatformApi\PlatformApi\obj\Debug\net471\PlatformApi.Ge
 C:\Users\djhlo\bopl mods\PlatformApi\PlatformApi\obj\Debug\net471\PlatformApi.AssemblyInfoInputs.cache
 C:\Users\djhlo\bopl mods\PlatformApi\PlatformApi\obj\Debug\net471\PlatformApi.AssemblyInfo.cs
 C:\Users\djhlo\bopl mods\PlatformApi\PlatformApi\obj\Debug\net471\PlatformApi.csproj.CoreCompileInputs.cache
-C:\Users\djhlo\bopl mods\PlatformApi\PlatformApi\obj\Debug\net471\PlatformApi.csproj.CopyComplete
 C:\Users\djhlo\bopl mods\PlatformApi\PlatformApi\obj\Debug\net471\PlatformApi.dll
 C:\Users\djhlo\bopl mods\PlatformApi\PlatformApi\obj\Debug\net471\PlatformApi.pdb
+C:\Users\djhlo\bopl mods\PlatformApi\PlatformApi\obj\Debug\net471\PlatformApi.sourcelink.json
+C:\Users\djhlo\bopl mods\PlatformApi\PlatformApi\obj\Debug\net471\Platform.38C56831.Up2Date
