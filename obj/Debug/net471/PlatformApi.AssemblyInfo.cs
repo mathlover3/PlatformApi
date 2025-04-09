@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("My first plugin")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+442a3dfd2890c5436fde9a4d5bd00d2e28219b64")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2becd01db16fe14d9a76080311d0cef9eb074a9f")]
 [assembly: System.Reflection.AssemblyProductAttribute("PlatformApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PlatformApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

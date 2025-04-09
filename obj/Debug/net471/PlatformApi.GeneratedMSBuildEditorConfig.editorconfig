@@ -1,5 +1,8 @@
 is_global = true
 build_property.RootNamespace = PlatformApi
-build_property.ProjectDir = C:\Users\djhlo\bopl mods\PlatformApi\PlatformApi\
+build_property.ProjectDir = E:\bopl modding and version archives\platform api repo\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.CsWinRTUseWindowsUIXamlProjections = false
+build_property.EffectiveAnalysisLevelStyle = 
+build_property.EnableCodeStyleSeverity = 

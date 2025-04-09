@@ -46,6 +46,10 @@ namespace PlatformApi
             Logger.LogInfo("harmany created");
             harmony.PatchAll();
             Logger.LogInfo("PlatformApi Patch Compleate!");
+        }
+
+        public void Start()
+        {
             //get the platform prefab out of the Platform ability gameobject (david) DO NOT REMOVE!
             //chatgpt code to get the Platform ability object
             GameObject[] allObjects = Resources.FindObjectsOfTypeAll(typeof(GameObject)) as GameObject[];
@@ -104,6 +108,7 @@ namespace PlatformApi
             SlimeCamObject = (GameObject)MyAssetBundle.LoadAsset("assets/assetbundleswanted/slimetrailcam.prefab");
             MyAssetBundle.Unload(false);
         }
+
         public void Update()
         {
             if (GameSessionHandler2)
